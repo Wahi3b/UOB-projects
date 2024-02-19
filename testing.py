@@ -1,105 +1,25 @@
+positive_tweets.txt:
+1. "Just had the best day ever! Spent quality time with friends and feeling so grateful for their love and support. #blessed"
+2. "The sun is shining, birds are chirping, and I'm ready to tackle the day with a smile! #positivity #goodvibes"
+3. "Shoutout to all the amazing healthcare workers out there! Your dedication and compassion inspire us all. #heroes"
+4. "Got accepted into my dream university! Hard work pays off, and I'm beyond excited for this new chapter. #grateful"
+5. "Surrounded by good energy and positive vibes. Life is too short to dwell on negativity. #happiness #positiveattitude"
+...
+9996. "Feeling grateful for the little things in life today: a warm cup of coffee, a good book, and a cozy blanket. #gratitude"
+9997. "Reached a personal milestone today! Celebrating small victories and looking forward to what the future holds. #progress"
+9998. "Sending love and positive energy to anyone who needs it today. Remember, you are capable of overcoming any challenge. #support"
+9999. "Caught a beautiful sunset on my evening walk. Nature's beauty never fails to lift my spirits. #naturelover #serenity"
+10000. "Spending time with family is the best remedy for a stressful week. Grateful for these moments of love and laughter. #familytime"
 
-
-def cluster(x,K,R):
-    import math
-    import random
-    # Find minimum of list of tuples
-    def mintuple(x):
-        xmin = math.inf
-        for i,xp in x:
-            if xp < xmin:
-                imin,xmin = i,xp
-        return (imin,xmin)
-
-    # Ensure cluster assignment is feasible (has at least one data point in each cluster)
-    def cluster_fix(X,K):
-        N = len(X)
-        for k in range(K):
-            if X.count(k) == 0:
-                X[k] = k
-        return X
-
-    # Cluster means
-    def cluster_means(x,X,K):
-        N = len(X)
-        mu = [0]*K
-        for k in range(K):
-            xk = [x[i] for i in range(N) if X[i]==k]
-            mu[k] = sum(xk)/len(xk)
-        return mu
-
-    # Compute cluster objective
-    def cluster_obj(x,X,mu,K):
-        N = len(X)
-        F = 0
-        for k in range(K):
-            xk = [x[i] for i in range(N) if X[i]==k]
-            dk = sum([(xp-mu[k]/len(xk))**2.0 for xp in xk])
-            F = F + dk
-        return F
-
-    # Create 1-Hamming distance cluster assignment neighbourhood
-    def cluster_nbr(X,K):
-        N = len(X)
-        Xnbr = []
-        for n in range(N):
-            j = X[n] + 1
-            if j == K:
-                j = 0
-            Xn = X.copy()
-            Xn[n] = j
-            Xnbr = Xnbr + [cluster_fix(Xn,K)]
-        return Xnbr
-
-    # Evaluate objectives for cluster assignment neighbourhood
-    def cluster_nbrobj(x,Xnbr,K):
-        N = len(x)
-        Fnbr = []
-        for nbr in range(N):
-            mu = cluster_means(x,Xnbr[nbr],K)
-            Fnbr = Fnbr + [(nbr,cluster_obj(x,Xnbr[nbr],mu,K))]
-        return Fnbr
-    # Step 1. Initialization
-
-    # Start with random cluster assignments
-    N = len(x)
-    X = []
-    for n in range(N):
-        X = X + [random.randint(0,K-1)]
-    X = cluster_fix(X,K)
-    n = 0
-    while (n <= R):
-
-        # Step 2. Neighbourhood search and termination check
-
-        # Compute current cluster objective
-        μ = cluster_means(x,X,K)
-        F = cluster_obj(x,X,μ,K)
-        print(f'Iteration n={n}: assignments X={X}, objective F={F}')
-
-        # Find (1-Hamming) neighbourhood of cluster assignments
-        Xnbr = cluster_nbr(X,K)
-
-        # Evaluate objective value of all cluster assignments in neighbourhood
-        Fnbr = cluster_nbrobj(x,Xnbr,K)
-
-        # Select optimal assignment X in neighbourhood
-        iopt,Fopt = mintuple(Fnbr)
-
-        # Check termination
-        if Fopt >= F:
-            break
-
-        # Update assignments
-        X = Xnbr[iopt]
-
-        # Step 3. Iterate
-        n = n + 1
-    
-    return X,F
-x = [0.1,-0.3,2.6,1.1,2.3,-0.8,-6.2,-7.8,-1.5,-0.4]
-print(f'Input data: x={x}')
-K = 3
-R = 20
-Xopt,Fopt = cluster(x,K,R)
-print(f'Greedy K-clustering: X*={Xopt}, F*={Fopt}')
+neutral_tweets.txt:
+1. "Just finished a great book. Highly recommend it to anyone looking for a new read! #booklover"
+2. "Rainy days call for cozy blankets and hot cocoa. Perfect weather for staying indoors and binge-watching Netflix. #relaxation"
+3. "Traffic was crazy this morning, but at least I had my favorite podcast to keep me entertained. #commuterlife"
+4. "Trying out a new recipe tonight. Fingers crossed it turns out as delicious as it looks in the picture! #cookingadventures"
+5. "Excited to attend a workshop on digital marketing tomorrow. Always looking to expand my skillset! #learning"
+...
+4996. "Enjoying a quiet evening at home with a cup of tea and some good music. Sometimes, simple pleasures are the best. #relaxing"
+4997. "Finished all my errands for the day. Feels good to have everything checked off the to-do list! #productivity"
+4998. "Looking forward to the weekend getaway I have planned. Need some time to recharge and explore new places! #travel"
+4999. "Just discovered a new café in my neighborhood. Can't wait to try their specialty coffee and pastries! #coffeelover"
+5000. "Loving the autumn weather and the beautiful colors of the leaves. It's the perfect season for outdoor walks. #autumnvibes"
