@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash
 from app import app, db
 from datetime import datetime
-from app.forms import LoginForm, RegistrationForm, AddStudentForm, BorrowForm
+from app.forms import LoginForm, RegistrationForm, AddStudentForm, BorrowForm,QueryForm,QueryResult
 from app.models import Student, Loan
 
 
@@ -72,4 +72,26 @@ def borrow():
             db.session.rollback()
     return render_template('borrow.html', title='Borrow', form=form)
 
-
+@app.route('/report', methods=['GET', 'POST'])
+def report():
+    form = QueryForm()
+    result = None
+    if form.validate_on_submit():
+        option = form.select_option.data
+        id_input = form.id_input.data
+        if option == 'student':
+            student = Student.query.get(id_input)
+            if student:
+                loans = Loan.query.filter_by(student_id=id_input).all()
+                result = QueryResult(student=student, loans=loans)
+            else:
+                flash('Student not found', 'error')
+                return redirect(url_for('report'))
+        elif option == 'device':
+            loans = Loan.query.filter_by(device_id=id_input).all()
+            if loans:
+                result = QueryResult(loans=loans)
+            else:
+                flash('Device not found', 'error')
+                return redirect(url_for('report'))
+    return render_template('report.html', form=form, result=result)

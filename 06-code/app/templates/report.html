@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Query Form</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.select_option.label }}: {{ form.select_option() }}
+    </div>
+    <div>
+        {{ form.id_input.label }}: {{ form.id_input() }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% if result %}
+    <h2>Query Result</h2>
+    {% if result.student %}
+        <h3>Student Info</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Attribute</th>
+                    <th scope="col">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Student ID</th>
+                    <td>{{ result.student.student_id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Username</th>
+                    <td>{{ result.student.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">First Name</th>
+                    <td>{{ result.student.firstname }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Last Name</th>
+                    <td>{{ result.student.lastname }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Email</th>
+                    <td>{{ result.student.email }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if result.loans %}
+            <h3>Student Loans</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Device ID</th>
+                        <th scope="col">Borrowed</th>
+                        <th scope="col">Returned</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in result.loans %}
+                    <tr>
+                        <td>{{ loan.device_id }}</td>
+                        <td>{{ loan.borrowdatetime }}</td>
+                        <td>{{ loan.returndatetime }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>The student has no devices loaned</p>
+        {% endif %}
+    {% elif result.loans %}
+        <h3>Device Loans</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Borrowed</th>
+                    <th scope="col">Returned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in result.loans %}
+                <tr>
+                    <td>{{ loan.student_id }}</td>
+                    <td>{{ loan.borrowdatetime }}</td>
+                    <td>{{ loan.returndatetime }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endif %}
+{% endblock %}

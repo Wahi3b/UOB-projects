@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField,SelectField
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
 from app.models import Student, Loan
 from sqlalchemy import and_
@@ -62,3 +62,17 @@ class BorrowForm(FlaskForm):
                     (Loan.returndatetime.is_(None))
                 ).first():
             raise ValidationError('This device cannot be borrowed as it is currently on loan')
+
+class QueryForm(FlaskForm):
+    select_option = SelectField('Select Option', choices=[('student', 'Student'), ('device', 'Device')], validators=[DataRequired()])
+    id_input = StringField('ID', validators=[DataRequired()])
+    submit = SubmitField('Query')
+
+    def validate_id_input(self, id_input):
+        if not id_input.data.isnumeric():
+            raise ValidationError('This must be a positive integer')
+
+class QueryResult:
+    def __init__(self, student=None, loans=None):
+        self.student = student
+        self.loans = loans
