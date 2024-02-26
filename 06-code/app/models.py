@@ -20,9 +20,17 @@ class Loan(db.Model):
     device_id = db.Column(db.Integer, nullable=False)
     borrowdatetime = db.Column(db.DateTime, nullable=False)
     returndatetime = db.Column(db.DateTime, nullable=True)
+    fine = db.Column(db.Float, default=0)  # New column for storing fine amount
     student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'), nullable=False)
 
+    def calculate_fine(self):
+        if self.returndatetime:
+            difference = self.returndatetime - self.borrowdatetime
+            days_difference = difference.days
+            if days_difference > 2:
+                self.fine = 5 * (days_difference - 2)
+
     def __repr__(self):
-        return f"loan('{self.device_id}', '{self.borrowdatetime}' , '{self.returndatetime}', '{self.student}')"
+        return f"loan('{self.device_id}', '{self.borrowdatetime}' , '{self.returndatetime}', '{self.student_id}')"
 
 

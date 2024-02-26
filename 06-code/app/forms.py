@@ -76,3 +76,7 @@ class QueryResult:
     def __init__(self, student=None, loans=None):
         self.student = student
         self.loans = loans
+
+class ReturnForm(FlaskForm):
+    student_id = StringField('Student_ID', validators=[DataRequired()])
+    submit = SubmitField('Request')

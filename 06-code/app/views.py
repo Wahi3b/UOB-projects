@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash
 from app import app, db
 from datetime import datetime
-from app.forms import LoginForm, RegistrationForm, AddStudentForm, BorrowForm,QueryForm,QueryResult
+from app.forms import LoginForm, RegistrationForm, AddStudentForm, BorrowForm,QueryForm,QueryResult,ReturnForm
 from app.models import Student, Loan
 
 
@@ -95,3 +95,21 @@ def report():
                 flash('Device not found', 'error')
                 return redirect(url_for('report'))
     return render_template('report.html', form=form, result=result)
+
+@app.route('/return_book', methods=['GET', 'POST'])
+def return_book():
+    form = ReturnForm()
+    if form.validate_on_submit():
+        loan_record = Loan.query.filter_by(student_id=form.student_id.data).first()
+        if loan_record:
+            loan_record.returndatetime = datetime.now()
+            loan_record.calculate_fine()  # Calculate fine
+            db.session.commit()
+            flash('Book returned successfully', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('No book borrowed by this user', 'error')
+            return redirect(url_for('return_book'))
+    return render_template('return.html', title='Returning', form=form)
+
+
