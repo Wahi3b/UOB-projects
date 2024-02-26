@@ -1,5 +1,6 @@
 db.create_all()
 db.session.commit()
+db.session.delete(s)
 Student.query.get  is a method used in SQLAlchemy to retrieve a row from the Student table based on its primary key.
 Student.query.filter_by
 Loan.query.filter(
@@ -24,3 +25,10 @@ def make_shell_context():
 # 1 from app import db
 # 2 from app . m o d e l s import S t u d e n t , Loan
 # 3 from d a t e t i m e import d a t e t i m e 
+
+# primary key: if true, sets a primary key constraint (not nullable
+# and unique)
+# • unique: if true, duplicate values are not allowed in the table
+# • index: add an index to speed search on this column
+# • nullable: if true, allow null values.
+# • default: sets the default value. Can be a value, or a function
