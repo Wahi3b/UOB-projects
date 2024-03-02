@@ -112,4 +112,8 @@ def return_book():
             return redirect(url_for('return_book'))
     return render_template('return.html', title='Returning', form=form)
 
+@app.route('/all_students', methods=['GET', 'POST'])
+def all_students():
+    students = Student.query.all()
+    return render_template('all_students.html', title='all_students', students=students)
 
