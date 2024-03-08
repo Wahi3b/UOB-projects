@@ -11,7 +11,9 @@ from flask_login import login_user,current_user, logout_user, login_required
 
 @app.route('/')
 def home():
-    posts = Post.query.all()
+    page = request.args.get('page', default = 1, type = int)
+    posts = Post.query.paginate(page=page, per_page=2)
+
     return render_template('home.html',posts=posts)
 
 @app.route('/about')
@@ -119,7 +121,7 @@ def update_post(post_id):
         db.session.commit()
         flash('Your post has been updated!', 'success')
         return redirect(url_for('post', post_id=post.id))
-    elif request == 'GET':
+    elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
     return render_template('create_post.html', title='Update Post', legend='Update Post', form=form)
