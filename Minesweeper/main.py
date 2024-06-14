@@ -51,4 +51,3 @@ def printGameBoard(board):
     print(formattedOutput)
     
 
-def mines(hidden):

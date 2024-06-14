@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="POST" action="" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        <label for="account" class="form-label">Account Handler</label>
+        {{ form.account(class="form-control", id="account", size=30) }}
+        {% for error in form.account.errors %}
+            <div class="invalid-feedback d-block">
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Classify</button>
+
+    {% if prediction is not none %}
+    <h2 style="font-family: Arial, sans-serif; color: #ffffff; margin-top: 20px;">Prediction: {{ prediction }}</h2>
+    {% endif %}
+</form>
+{% endblock %}
