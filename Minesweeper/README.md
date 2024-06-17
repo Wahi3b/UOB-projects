@@ -1,0 +1,1 @@
+A simple minesweeper game that i created to practice for an exam.
